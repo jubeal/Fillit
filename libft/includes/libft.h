@@ -6,7 +6,7 @@
 /*   By: jubeal <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/06 14:06:02 by jubeal            #+#    #+#             */
-/*   Updated: 2018/11/27 15:45:31 by jubeal           ###   ########.fr       */
+/*   Updated: 2018/11/28 16:23:12 by jubeal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,4 +86,5 @@ void				ft_lstaddend(t_list **alst, t_list *new);
 void				ft_putstab(char **tab);
 void				ft_putntab(int *tab, size_t n);
 void				*ft_realloc(void *ptr, size_t size);
+int					ft_power(int nbr, int power);
 #endif

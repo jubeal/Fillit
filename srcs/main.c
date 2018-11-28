@@ -6,13 +6,14 @@
 /*   By: jubeal <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/27 15:41:01 by jubeal            #+#    #+#             */
-/*   Updated: 2018/11/27 18:51:36 by jubeal           ###   ########.fr       */
+/*   Updated: 2018/11/28 18:34:14 by jubeal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "fillit.h"
 #include <stdlib.h>
 #include <fcntl.h>
+#include "fillit.h"
+#include <stdio.h>
 
 int		check_line(char *str, int type)
 {
@@ -28,45 +29,37 @@ int		check_line(char *str, int type)
 				return (0);
 	}
 	else
+	{
 		if (ft_strlen(str) != 0)
 			return (0);
+	}
 	return (1);
 }
 
-int		check_file(int fd, t_list_pieces **head)
+int		check_file(int fd, t_pieces **head)
 {
-	char			*line;
-	int				nbr_lines;
-	t_list_pieces	*tmp;
+	char		*line;
+	int			nbr_lines;
+	t_pieces	*tmp;
 
 	nbr_lines = 1;
 	tmp = *head;
-	tmp->piece = NULL;
 	while (get_next_line(fd, &line) > 0)
 	{
-		if (!tmp->piece && !(tmp->piece = (char **)malloc(sizeof(char *) * 4)))
-			return (0);
-		tmp->next = NULL;
 		if ((nbr_lines % 5))
 		{
 			if (!(check_line(line, 0)))
 				return (0);
-			else if ((nbr_lines++))
-				(tmp->piece)[(nbr_lines % 5) - 1] = ft_strdup(line);
+			line_convert(&tmp, line, (nbr_lines % 5) - 1);
 		}
 		else
 		{
 			if (!(check_line(line, 1)))
+				return (0);	
+			if (!(tmp = create_lstlink(head)))
 				return (0);
-			else
-			{
-				tmp = tmp->next;
-				if (!(tmp = (t_list_pieces *)malloc(sizeof(t_list_pieces))))
-					return (0);
-				tmp->piece = NULL;
-				nbr_lines++;
-			}
 		}
+		nbr_lines++;
 	}
 	return (1);
 }
@@ -82,22 +75,20 @@ int		errors(int type)
 
 int		main(int ac, char **av)
 {
-	int				fd;
-	t_list_pieces	*head;
+	int			fd;
+	t_pieces	*head;
 
 	if (ac != 2)
 		return (errors(1));
-	if (!(head = (t_list_pieces *)malloc(sizeof(t_list_pieces))))
-		return (errors(2));
-	head->next = NULL;
+	head = create_lstlink(&head);
 	if ((fd = open(av[1], O_RDONLY)) == -1)
 		return (errors(2));
 	if (!check_file(fd, &head))
 		return (errors(2));
-	/*while (head != NULL)
+	while (head)
 	{
-		ft_putstab(head->piece);
+		printf("%hu\n%hu\n%hu\n%hu\n\n", (head->piece)[0], (head->piece)[1], (head->piece)[2], (head->piece)[3]);
 		head = head->next;
-	}*/
+	}
 	ft_putstr("check!\n");
 }

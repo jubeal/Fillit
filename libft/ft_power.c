@@ -1,25 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   fillit.h                                           :+:      :+:    :+:   */
+/*   ft_power.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jubeal <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/11/27 15:41:24 by jubeal            #+#    #+#             */
-/*   Updated: 2018/11/28 18:05:59 by jubeal           ###   ########.fr       */
+/*   Created: 2018/11/28 16:19:45 by jubeal            #+#    #+#             */
+/*   Updated: 2018/11/28 17:47:21 by jubeal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FILLIT_H
-# define FILLIT_H
-# include "get_next_line.h"
+#include "libft.h"
 
-typedef struct		s_pieces
+int		ft_power(int nbr, int power)
 {
-	short			*piece;
-	struct s_pieces	*next;
-}					t_pieces;
+	int		ret;
 
-t_pieces			*create_lstlink(t_pieces **link);
-void				line_convert(t_pieces **curr, char *line, int which);
-#endif
+	ret = nbr;
+	while (power != 1)
+	{
+		ret *= nbr;
+		power--;
+	}
+	return (ret);
+}
