@@ -6,7 +6,7 @@
 /*   By: jubeal <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/27 15:41:24 by jubeal            #+#    #+#             */
-/*   Updated: 2018/11/28 18:05:59 by jubeal           ###   ########.fr       */
+/*   Updated: 2018/11/29 13:39:26 by jubeal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,14 @@
 # define FILLIT_H
 # include "get_next_line.h"
 
-typedef struct		s_pieces
+typedef struct				s_pieces
 {
-	short			*piece;
-	struct s_pieces	*next;
-}					t_pieces;
+	unsigned short			*piece;
+	struct s_pieces			*next;
+}							t_pieces;
 
-t_pieces			*create_lstlink(t_pieces **link);
-void				line_convert(t_pieces **curr, char *line, int which);
+t_pieces					*create_lstlink(t_pieces **link);
+void						line_convert(t_pieces **curr, char *line,
+										int which);
+void						innitialize_pieces(t_pieces **head);
 #endif

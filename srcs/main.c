@@ -6,7 +6,7 @@
 /*   By: jubeal <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/27 15:41:01 by jubeal            #+#    #+#             */
-/*   Updated: 2018/11/28 18:34:14 by jubeal           ###   ########.fr       */
+/*   Updated: 2018/11/29 14:05:33 by jubeal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,8 @@ int		check_file(int fd, t_pieces **head)
 	tmp = *head;
 	while (get_next_line(fd, &line) > 0)
 	{
+		if (!tmp && !(tmp = create_lstlink(head)))
+			return (0);
 		if ((nbr_lines % 5))
 		{
 			if (!(check_line(line, 0)))
@@ -55,9 +57,8 @@ int		check_file(int fd, t_pieces **head)
 		else
 		{
 			if (!(check_line(line, 1)))
-				return (0);	
-			if (!(tmp = create_lstlink(head)))
 				return (0);
+			tmp = tmp->next;
 		}
 		nbr_lines++;
 	}
@@ -85,6 +86,7 @@ int		main(int ac, char **av)
 		return (errors(2));
 	if (!check_file(fd, &head))
 		return (errors(2));
+	innitialize_pieces(&head);
 	while (head)
 	{
 		printf("%hu\n%hu\n%hu\n%hu\n\n", (head->piece)[0], (head->piece)[1], (head->piece)[2], (head->piece)[3]);
