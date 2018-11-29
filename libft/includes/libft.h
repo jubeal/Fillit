@@ -6,7 +6,7 @@
 /*   By: jubeal <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/06 14:06:02 by jubeal            #+#    #+#             */
-/*   Updated: 2018/11/28 16:23:12 by jubeal           ###   ########.fr       */
+/*   Updated: 2018/11/29 17:27:37 by jubeal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,4 +87,6 @@ void				ft_putstab(char **tab);
 void				ft_putntab(int *tab, size_t n);
 void				*ft_realloc(void *ptr, size_t size);
 int					ft_power(int nbr, int power);
+char				*ft_convert_base(char *nbr, char *base_from, char *base_to);
+int					ft_atoi_base(char *str, char *base);
 #endif

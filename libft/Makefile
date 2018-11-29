@@ -6,7 +6,7 @@
 #    By: jubeal <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/11/12 17:43:42 by jubeal            #+#    #+#              #
-#    Updated: 2018/11/28 16:23:53 by jubeal           ###   ########.fr        #
+#    Updated: 2018/11/29 17:26:59 by jubeal           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -80,7 +80,9 @@ SRC = ft_atoi.c \
 	  ft_putntab.c \
 	  ft_realloc.c \
 	  get_next_line.c \
-	  ft_power.c
+	  ft_power.c \
+	  ft_convert_base.c \
+	  ft_atoi_base.c
 	  
 OBJ = $(SRC:.c=.o)
 
