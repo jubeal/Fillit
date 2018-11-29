@@ -6,7 +6,7 @@
 /*   By: jubeal <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/28 15:46:17 by jubeal            #+#    #+#             */
-/*   Updated: 2018/11/29 14:05:21 by jubeal           ###   ########.fr       */
+/*   Updated: 2018/11/29 15:49:19 by jubeal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,4 +65,60 @@ void		innitialize_pieces(t_pieces **head)
 		ft_reset_piece(tmp);
 		tmp = tmp->next;
 	}
+}
+
+int			check_form(t_pieces *tmp)
+{
+	int		i;
+	int		j;
+	int		link;
+
+	link = 0;
+	i = -1;
+	while ((++i) < 4)
+	{
+		j = -1;
+		while (++j < 4)
+		{
+			if ((tmp->piece)[i] & (0x8000 >> j))
+			{
+				if (j > 0 && (tmp->piece)[i] & (0x8000 >> (j - 1)))
+					link++;
+				if (j < 3 && (tmp->piece)[i] & (0x8000 >> (j + 1)))
+					link++;
+				if (i > 0 && (tmp->piece)[i - 1] & (0x8000 >> j))
+					link++;
+				if (i < 3 && (tmp->piece)[i + 1] & (0x8000 >> j))
+					link++;
+			}
+		}
+	}
+	return (link);
+}
+
+int			check_pieces(t_pieces **head)
+{
+	t_pieces	*tmp;
+	int			i;
+	int			ret;
+	int			j;
+
+	tmp = *head;
+	ret = 0;
+	while (tmp)
+	{
+		i = -1;
+		while (++i < 4)
+		{
+			j = -1;
+			while (++j < 4)
+				if ((tmp->piece)[i] & (0x8000 >> j))
+					ret++;
+		}
+		if (ret != 4 || check_form(tmp) < 6)
+			return (0);
+		ret = 0;
+		tmp = tmp->next;
+	}
+	return (1);
 }

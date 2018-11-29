@@ -6,7 +6,7 @@
 /*   By: jubeal <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/27 15:41:24 by jubeal            #+#    #+#             */
-/*   Updated: 2018/11/29 13:39:26 by jubeal           ###   ########.fr       */
+/*   Updated: 2018/11/29 14:51:34 by jubeal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,5 +23,6 @@ typedef struct				s_pieces
 t_pieces					*create_lstlink(t_pieces **link);
 void						line_convert(t_pieces **curr, char *line,
 										int which);
-void						innitialize_pieces(t_pieces **head);
+//void						innitialize_pieces(t_pieces **head);
+int							check_pieces(t_pieces **head);
 #endif

@@ -6,7 +6,7 @@
 /*   By: jubeal <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/27 15:41:01 by jubeal            #+#    #+#             */
-/*   Updated: 2018/11/29 14:05:33 by jubeal           ###   ########.fr       */
+/*   Updated: 2018/11/29 14:54:50 by jubeal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,9 @@ int		main(int ac, char **av)
 		return (errors(2));
 	if (!check_file(fd, &head))
 		return (errors(2));
-	innitialize_pieces(&head);
+	//innitialize_pieces(&head);
+	if (!check_pieces(&head))
+		return (errors(2));
 	while (head)
 	{
 		printf("%hu\n%hu\n%hu\n%hu\n\n", (head->piece)[0], (head->piece)[1], (head->piece)[2], (head->piece)[3]);
