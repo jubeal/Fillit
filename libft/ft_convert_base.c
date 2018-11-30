@@ -3,14 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   ft_convert_base.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jubeal <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: scoron <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/11/29 17:22:54 by jubeal            #+#    #+#             */
-/*   Updated: 2018/11/29 17:28:09 by jubeal           ###   ########.fr       */
+/*   Created: 2018/09/11 18:52:00 by scoron            #+#    #+#             */
+/*   Updated: 2018/11/15 19:26:06 by scoron           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
 #include "libft.h"
 
 static int		ft_check_error_b(char *base)

@@ -3,17 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   ft_putendl.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jubeal <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: scoron <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/11/06 15:17:29 by jubeal            #+#    #+#             */
-/*   Updated: 2018/11/07 12:13:27 by jubeal           ###   ########.fr       */
+/*   Created: 2018/11/14 11:44:51 by scoron            #+#    #+#             */
+/*   Updated: 2018/11/14 17:00:22 by scoron           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	ft_putendl(char const *str)
+void	ft_putendl(char const *s)
 {
-	ft_putstr(str);
-	ft_putchar('\n');
+	if (!(s))
+		return ;
+	ft_putstr(s);
+	write(1, "\n", 1);
 }

@@ -3,131 +3,93 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jubeal <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: scoron <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/11/21 11:49:37 by jubeal            #+#    #+#             */
-/*   Updated: 2018/11/27 15:52:37 by jubeal           ###   ########.fr       */
+/*   Created: 2018/11/23 17:54:28 by scoron            #+#    #+#             */
+/*   Updated: 2018/11/29 15:32:06 by scoron           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
-#include <stdlib.h>
-#include "get_next_line.h"
+#include "libft.h"
 
-static int			fill_with_rest(char **to_fill, t_list_fd **current)
+static t_chain	*ft_newfd(int fd)
 {
-	int			i;
+	t_chain	*nw;
 
-	i = 0;
-	while ((*current)->rest[i] && (*current)->rest[i] != '\n')
-		i++;
-	if (!(*to_fill = ft_strnew(i)))
-		return (-1);
-	i = 0;
-	while ((*current)->rest[i])
-	{
-		if ((*current)->rest[i] == '\n')
-		{
-			(*to_fill)[i] = '\0';
-			if ((*current)->rest + i + 1)
-				(*current)->rest = (*current)->rest + i + 1;
-			else
-				(*current)->rest = NULL;
-			return (0);
-		}
-		(*to_fill)[i] = (*current)->rest[i];
-		i++;
-	}
-	(*current)->rest = NULL;
-	return (1);
+	if (!(nw = (t_chain*)malloc(sizeof(t_chain))))
+		return (NULL);
+	nw->next = NULL;
+	nw->previous = NULL;
+	nw->res = NULL;
+	nw->fd = fd;
+	return (nw);
 }
 
-static int			fill_final(long car_read, char **final,
-			char buff[BUFF_SIZE + 1])
+static t_chain	*ft_getfd(t_chain *fd_chain, int fd)
 {
-	char		*tmp;
-
-	if (car_read == -1)
-		return (-1);
-	if (car_read)
-	{
-		tmp = *final;
-		if (!(*final = ft_strnew(ft_strlen(tmp) + ft_strlen(buff))))
-			return (-1);
-		ft_strcpy(*final, tmp);
-		ft_strcat(*final, buff);
-		free(tmp);
-	}
-	return (0);
-}
-
-static int			process(char **final, t_list_fd **current)
-{
-	long		car_read;
-	char		*buff;
-	int			test;
-	long		i;
-
-	car_read = BUFF_SIZE;
-	test = 1;
-	if (!(buff = (char *)malloc(sizeof(char) * (BUFF_SIZE + 1))))
-		return (-1);
-	while (car_read == BUFF_SIZE && test)
-	{
-		if ((car_read = read((*current)->fd, buff, BUFF_SIZE)) == -1)
-			return (-1);
-		buff[car_read] = '\0';
-		i = 0;
-		while (buff[i] != '\0' && buff[i] != '\n')
-			i++;
-		if (buff[i] == '\n' && i == car_read - 1 && !(--test))
-			buff[i] = '\0';
-		if (buff[i] == '\n' && i < car_read && !(--test) && !(buff[i] = '\0'))
-			(*current)->rest = ft_strdup(buff + i + 1);
-		if (fill_final(car_read, final, buff) == -1)
-			return (-1);
-	}
-	free(buff);
-	return (car_read > 0 ? 1 : car_read);
-}
-
-static t_list_fd	*pick_up_good_one(int fd, t_list_fd **current)
-{
-	if (!(*current))
-	{
-		if (!(*current = (t_list_fd *)malloc(sizeof(t_list_fd))))
+	if (!fd_chain)
+		if (!(fd_chain = ft_newfd(fd)))
 			return (NULL);
-		(*current)->rest = NULL;
-		(*current)->fd = fd;
-		(*current)->next = NULL;
-		return (*current);
-	}
-	if (fd == (*current)->fd)
-		return (*current);
-	return (pick_up_good_one(fd, &((*current)->next)));
+	while (fd_chain->fd != fd && fd_chain->previous)
+		fd_chain = fd_chain->previous;
+	while (fd_chain->fd != fd && fd_chain->next)
+		fd_chain = fd_chain->next;
+	if (fd_chain->fd == fd)
+		return (fd_chain);
+	if (!(fd_chain->next = ft_newfd(fd)))
+		return (NULL);
+	fd_chain->next->previous = fd_chain;
+	fd_chain = fd_chain->next;
+	return (fd_chain);
 }
 
-int					get_next_line(const int fd, char **line)
+static int		ft_joinfree(t_chain *fd_chain)
 {
-	char				*final;
-	static t_list_fd	*rest;
-	int					ret;
-	t_list_fd			*current;
+	char	*buf;
+	char	*tmp;
+	int		checkread;
 
-	if (BUFF_SIZE < 1 || fd < 0 || !line || !(current = pick_up_good_one(fd, &rest)))
+	checkread = 1;
+	tmp = 0;
+	if (!(buf = (char *)malloc(sizeof(char) * (BUFF_SIZE + 1))))
 		return (-1);
-	if (!current->rest)
+	*buf = 0;
+	while (!(ft_strchr(buf, '\n')) && checkread > 0)
 	{
-		if (!(final = (char *)malloc(sizeof(char))))
-			return (-1);
-		final[0] = '\0';
+		if ((checkread = read(fd_chain->fd, buf, BUFF_SIZE)) >= 0)
+		{
+			buf[checkread] = '\0';
+			if (!(fd_chain->res))
+				tmp = ft_strdup(buf);
+			else
+				tmp = ft_strjoin(fd_chain->res, buf);
+			free(fd_chain->res);
+			fd_chain->res = tmp;
+		}
 	}
-	else if (!fill_with_rest(&final, &current) && (*line = final))
-		return (1);
-	if (final == NULL || (ret = process(&final, &current)) == -1)
+	free(buf);
+	return ((fd_chain->res && *(fd_chain->res)
+				&& checkread >= 0) ? 1 : checkread);
+}
+
+int				get_next_line(const int fd, char **line)
+{
+	static t_chain	*fd_chain;
+	int				checkread;
+
+	checkread = 1;
+	if (!(fd_chain))
+		fd_chain = NULL;
+	if (fd < 0 || !line || BUFF_SIZE <= 0)
 		return (-1);
-	*line = final;
-	if ((*line)[0] == '\0' && !ret)
-		return (0);
-	return (1);
+	if (!(fd_chain = ft_getfd(fd_chain, fd)))
+		return (-1);
+	if (!(fd_chain->res))
+		checkread = ft_joinfree(fd_chain);
+	else if (!(ft_strchr(fd_chain->res, '\n')))
+		checkread = ft_joinfree(fd_chain);
+	if (checkread < 0)
+		return (-1);
+	*line = ft_strcutuntil(&(fd_chain->res), '\n');
+	return (checkread > 0 ? 1 : checkread);
 }

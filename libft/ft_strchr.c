@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strchr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jubeal <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: scoron <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/11/09 10:36:16 by jubeal            #+#    #+#             */
-/*   Updated: 2018/11/15 13:57:29 by jubeal           ###   ########.fr       */
+/*   Created: 2018/11/10 11:46:42 by scoron            #+#    #+#             */
+/*   Updated: 2018/11/11 14:12:04 by scoron           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,11 @@
 
 char	*ft_strchr(const char *s, int c)
 {
-	size_t	i;
+	int i;
 
-	i = 0;
-	while (i < ft_strlen(s) + 1)
-	{
-		if (s[i] == (unsigned char)c)
+	i = -1;
+	while (*(s + ++i))
+		if (*(s + i) == (unsigned char)c)
 			return ((char *)s + i);
-		i++;
-	}
-	return ((char *)0);
+	return (*((char *)s + i) == (unsigned char)c ? (char *)s + i : 0);
 }

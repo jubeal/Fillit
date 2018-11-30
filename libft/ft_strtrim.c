@@ -3,55 +3,42 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strtrim.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jubeal <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: scoron <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/11/09 16:17:39 by jubeal            #+#    #+#             */
-/*   Updated: 2018/11/15 14:07:38 by jubeal           ###   ########.fr       */
+/*   Created: 2018/11/13 15:35:28 by scoron            #+#    #+#             */
+/*   Updated: 2018/11/14 16:37:36 by scoron           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int	get_i(const char *s)
+static int	ft_iswhite(char c)
 {
-	int		j;
-	int		i;
-
-	j = 0;
-	i = 0;
-	while (s[i + j])
-	{
-		i += j;
-		j = 0;
-		while (s[i] != ' ' && s[i] != '\t' && s[i] != '\n' && s[i] != '\0')
-			i++;
-		while (s[i + j] == ' ' || s[i + j] == '\t' || s[i + j] == '\n')
-			j++;
-	}
-	return (i);
+	if (c == ' ' || c == '\t' || c == '\n')
+		return (1);
+	return (0);
 }
 
-char		*ft_strtrim(const char *s)
+char		*ft_strtrim(char const *s)
 {
-	char	*ret;
-	int		i;
-	int		j;
-	int		len;
+	size_t			i;
+	size_t			j;
+	size_t			len;
+	char			*res;
 
-	if (!s)
-		return ((char *)0);
-	i = get_i(s);
+	if (!(s))
+		return (0);
+	i = 0;
+	len = ft_strlen(s);
 	j = 0;
-	if (i == 0)
-		return (ft_strdup(""));
-	while (s[j] == ' ' || s[j] == '\t' || s[j] == '\n')
-		j++;
-	len = i - j;
-	if (!(ret = ft_strnew(sizeof(char) * len)))
-		return ((char *)0);
-	ret[len] = '\0';
-	len = -1;
-	while ((j + ++len) != i)
-		ret[len] = s[j + len];
-	return (ret);
+	while (ft_iswhite(s[i]) && s[i])
+		i++;
+	if (i != len)
+		while (ft_iswhite(s[len - 1]))
+		{
+			len--;
+			j++;
+		}
+	res = ft_strsub(s, i, (ft_strlen(s) - i - j));
+	return (res);
 }

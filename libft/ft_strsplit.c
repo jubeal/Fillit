@@ -3,91 +3,89 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strsplit.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jubeal <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: scoron <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/11/13 16:32:59 by jubeal            #+#    #+#             */
-/*   Updated: 2018/11/27 15:49:01 by jubeal           ###   ########.fr       */
+/*   Created: 2018/11/13 16:23:54 by scoron            #+#    #+#             */
+/*   Updated: 2018/11/14 16:38:08 by scoron           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-#include <stdlib.h>
 
-static int	ft_count_words(char const *s, char c)
+static int	ft_countw(char const *s, char c)
 {
-	int		words;
 	int		i;
+	int		k;
 
 	i = 0;
-	words = 0;
+	k = 0;
 	while (s[i])
 	{
-		if (s[i] != c)
-			words++;
-		while (s[i] && s[i] != c)
+		while (s[i] == c && s[i])
 			i++;
-		while (s[i] == c)
+		if (s[i])
+			k++;
+		while (s[i] != c && s[i])
 			i++;
 	}
-	return (words);
+	return (k);
 }
 
-static int	ft_size_words(char const *s, char c, int n)
+static char	*ft_spmall(char const *s, int i, char c)
 {
-	int		size;
+	int		j;
+	char	*res;
 
-	size = 0;
-	while (s[n] && s[n] != c)
+	j = 0;
+	while (s[i] != c && s[i])
 	{
-		n++;
-		size++;
+		j++;
+		i++;
 	}
-	return (size);
+	if (!(res = (char *)malloc((j + 1) * sizeof(char))))
+		return (0);
+	return (res);
 }
 
-static char	*ft_string(char const *s, char *str, char c, int n)
+static void	ft_spcpy(char **res, char const *s, char c)
 {
-	int		x;
-	int		size;
+	int		i;
+	int		j;
+	int		k;
 
-	x = 0;
-	size = ft_size_words(s, c, n);
-	if (!(str = (char*)malloc(sizeof(char) * (size))))
-		return (NULL);
-	while (x < size)
+	i = 0;
+	k = -1;
+	while (s[i])
 	{
-		str[x] = s[n];
-		x++;
-		n++;
+		while (s[i] == c && s[i])
+			i++;
+		k++;
+		if (s[i])
+			if (!(res[k] = ft_spmall(s, i, c)))
+				return ;
+		j = 0;
+		while (s[i] != c && s[i])
+		{
+			res[k][j] = s[i];
+			i++;
+			j++;
+		}
+		if (s[i])
+			res[k][j] = 0;
 	}
-	str[x] = '\0';
-	return (str);
 }
 
 char		**ft_strsplit(char const *s, char c)
 {
-	char	**str;
-	int		i;
-	int		n;
+	int		w;
+	char	**res;
 
-	i = 0;
-	n = 0;
-	if (!s || !c)
-		return ((char **)0);
-	if (!(str = (char**)malloc(sizeof(*str) * (ft_count_words(s, c) + 1))))
-		return (NULL);
-	while (i < ft_count_words(s, c))
-	{
-		if (s[n] == c)
-			n++;
-		else
-		{
-			str[i] = ft_string(s, str[i], c, n);
-			while (s[n] && s[n] != c)
-				n++;
-			i++;
-		}
-	}
-	str[i] = 0;
-	return (str);
+	if (s == 0)
+		return (0);
+	w = ft_countw(s, c);
+	if (!(res = (char **)malloc(sizeof(char *) * (w + 1))))
+		return (0);
+	res[w] = 0;
+	ft_spcpy(res, s, c);
+	return (res);
 }

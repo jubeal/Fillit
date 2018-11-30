@@ -6,14 +6,13 @@
 /*   By: jubeal <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/27 15:41:01 by jubeal            #+#    #+#             */
-/*   Updated: 2018/11/29 14:54:50 by jubeal           ###   ########.fr       */
+/*   Updated: 2018/11/30 13:51:44 by jubeal           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
 #include <fcntl.h>
 #include "fillit.h"
-#include <stdio.h>
 
 int		check_line(char *str, int type)
 {
@@ -76,8 +75,10 @@ int		errors(int type)
 
 int		main(int ac, char **av)
 {
-	int			fd;
-	t_pieces	*head;
+	int				fd;
+	t_pieces		*head;
+	int				sq_size;
+	unsigned short	*map;
 
 	if (ac != 2)
 		return (errors(1));
@@ -86,13 +87,22 @@ int		main(int ac, char **av)
 		return (errors(2));
 	if (!check_file(fd, &head))
 		return (errors(2));
-	//innitialize_pieces(&head);
-	if (!check_pieces(&head))
-		return (errors(2));
-	while (head)
+	initialize_pieces(&head);
+	sq_size = 1;
+	map =  NULL;
+	while (sq_size++ < 16 && map == NULL)
 	{
-		printf("%hu\n%hu\n%hu\n%hu\n\n", (head->piece)[0], (head->piece)[1], (head->piece)[2], (head->piece)[3]);
-		head = head->next;
+		ft_putnbr(sq_size);
+		ft_putchar('\n');
+		fd = -1;
+		if (!(map = malloc(sizeof(short) * sq_size)))
+			return (errors(2));
+		while (++fd < sq_size)
+			map[fd] = 0;
+		map = ft_solve(head, map, sq_size);
 	}
-	ft_putstr("check!\n");
+	if (map == NULL)
+		return (0);
+	affichage(head, sq_size - 1);
+	return (0);
 }

@@ -3,40 +3,40 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strnstr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jubeal <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: scoron <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/11/09 11:05:52 by jubeal            #+#    #+#             */
-/*   Updated: 2018/11/15 13:01:53 by jubeal           ###   ########.fr       */
+/*   Created: 2018/09/04 11:51:51 by scoron            #+#    #+#             */
+/*   Updated: 2018/11/12 10:30:50 by scoron           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strnstr(const char *big, const char *little, size_t len)
+char	*ft_strnstr(const char *haystack, const char *needle, size_t len)
 {
-	size_t	i;
-	int		j;
-	char	*pt;
+	int i;
+	int k;
+	int milestone;
 
 	i = 0;
-	pt = 0;
-	if (little[i] == '\0')
-		return ((char *)big);
-	while (big[i] != '\0' && i < len)
+	if (needle[0] == '\0')
+		return ((char *)haystack);
+	while (haystack[i] != '\0' && i < (int)len)
 	{
-		if (big[i] == little[0])
+		k = 0;
+		if (haystack[i] == needle[k])
 		{
-			pt = (char *)big + i;
-			j = 0;
-			while (big[i + j] == little[j] && i + j < len)
+			milestone = i;
+			while (haystack[i] == needle[k++]
+					&& haystack[i] != '\0' && i < (int)len)
 			{
-				if (little[j + 1] == '\0')
-					return (pt);
-				j++;
+				i++;
+				if (needle[k] == '\0')
+					return ((char *)haystack + i - k);
 			}
-			pt = 0;
+			i = milestone;
 		}
 		i++;
 	}
-	return (NULL);
+	return (0);
 }

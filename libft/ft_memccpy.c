@@ -3,30 +3,26 @@
 /*                                                        :::      ::::::::   */
 /*   ft_memccpy.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jubeal <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: scoron <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/11/08 15:33:46 by jubeal            #+#    #+#             */
-/*   Updated: 2018/11/08 16:11:48 by jubeal           ###   ########.fr       */
+/*   Created: 2018/11/07 20:35:34 by scoron            #+#    #+#             */
+/*   Updated: 2018/11/14 16:06:11 by scoron           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	*ft_memccpy(void *dest, const void *src, int c, size_t n)
+void	*ft_memccpy(void *dst, const void *src, int c, size_t n)
 {
-	char	*d;
-	char	*s;
-	size_t	i;
+	size_t p;
 
-	i = 0;
-	s = (char *)src;
-	d = (char *)dest;
-	while (i < n)
+	p = 0;
+	while (p < n && *((unsigned char*)src + p) != (unsigned char)c)
 	{
-		d[i] = s[i];
-		if ((unsigned char)s[i] == (unsigned char)c)
-			return ((char *)dest + i + 1);
-		i++;
+		*((unsigned char*)dst + p) = *((unsigned char*)src + p);
+		p++;
 	}
-	return ((void *)0);
+	if (p != n)
+		*((unsigned char*)dst + p) = *((unsigned char*)src + p);
+	return (p == n ? 0 : dst + p + 1);
 }

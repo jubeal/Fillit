@@ -3,21 +3,30 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strcmp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jubeal <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: scoron <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/11/09 11:32:13 by jubeal            #+#    #+#             */
-/*   Updated: 2018/11/13 14:50:50 by jubeal           ###   ########.fr       */
+/*   Created: 2018/09/04 13:07:29 by scoron            #+#    #+#             */
+/*   Updated: 2018/11/11 16:03:38 by scoron           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int		ft_strcmp(const char *s1, const char *s2)
+int	ft_strcmp(const char *s1, const char *s2)
 {
-	int		i;
+	int i;
 
 	i = 0;
-	while (s1[i] == s2[i] && s1[i])
+	while (*((unsigned char *)s1 + i) != '\0'
+			|| *((unsigned char *)s2 + i) != '\0')
+	{
+		if (*((unsigned char *)s1 + i) == '\0')
+			return (-*((unsigned char *)s2 + i));
+		if (*((unsigned char *)s2 + i) == '\0')
+			return (*((unsigned char *)s1 + i));
+		if (*((unsigned char *)s1 + i) != *((unsigned char *)s2 + i))
+			return (*((unsigned char *)s1 + i) - *((unsigned char *)s2 + i));
 		i++;
-	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
+	}
+	return (0);
 }
