@@ -6,63 +6,13 @@
 /*   By: jubeal <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/27 15:41:01 by jubeal            #+#    #+#             */
-/*   Updated: 2018/11/30 13:51:44 by jubeal           ###   ########.fr       */
+/*   Updated: 2018/12/04 23:35:08 by scoron           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
 #include <fcntl.h>
 #include "fillit.h"
-
-int		check_line(char *str, int type)
-{
-	int		i;
-
-	i = -1;
-	if (type == 0)
-	{
-		if (ft_strlen(str) != 4)
-			return (0);
-		while (str[++i])
-			if (str[i] != '.' && str[i] != '#')
-				return (0);
-	}
-	else
-	{
-		if (ft_strlen(str) != 0)
-			return (0);
-	}
-	return (1);
-}
-
-int		check_file(int fd, t_pieces **head)
-{
-	char		*line;
-	int			nbr_lines;
-	t_pieces	*tmp;
-
-	nbr_lines = 1;
-	tmp = *head;
-	while (get_next_line(fd, &line) > 0)
-	{
-		if (!tmp && !(tmp = create_lstlink(head)))
-			return (0);
-		if ((nbr_lines % 5))
-		{
-			if (!(check_line(line, 0)))
-				return (0);
-			line_convert(&tmp, line, (nbr_lines % 5) - 1);
-		}
-		else
-		{
-			if (!(check_line(line, 1)))
-				return (0);
-			tmp = tmp->next;
-		}
-		nbr_lines++;
-	}
-	return (1);
-}
 
 int		errors(int type)
 {
@@ -73,36 +23,76 @@ int		errors(int type)
 	return (1);
 }
 
+void	check_small_size(t_pieces *bitch, int *j)
+{
+	if (*j < 3 && ((bitch->piece)[2] | 0 || (bitch->piece)[0] & 0x2000
+				|| (bitch->piece)[1] & 0x2000))
+		*j = 3;
+	if (*j < 4 && ((bitch->piece)[3] | 0 || (bitch->piece)[0] & 0x1000))
+		*j = 4;
+	if (bitch->next)
+		check_small_size(bitch->next, j);
+}
+
+int		ft_sqsize(t_pieces *head)
+{
+	int			i;
+	int			j;
+	t_pieces	*bitch;
+
+	if (!head)
+		return (0);
+	bitch = head;
+	i = 4;
+	while (bitch->next)
+	{
+		bitch = bitch->next;
+		i += 4;
+	}
+	j = 2;
+	while (j * j < i)
+		j++;
+	if (j < 4)
+		check_small_size(head, &j);
+	return (j);
+}
+
+int		ft_countpieces(t_pieces *head)
+{
+	t_pieces	*tmp;
+	int			n;
+
+	tmp = head;
+	n = 1;
+	while (tmp->next)
+	{
+		n++;
+		tmp = tmp->next;
+	}
+	return (n);
+}
+
 int		main(int ac, char **av)
 {
 	int				fd;
 	t_pieces		*head;
-	int				sq_size;
+	t_fibox			*toolbox;
 	unsigned short	*map;
 
 	if (ac != 2)
 		return (errors(1));
 	head = create_lstlink(&head);
-	if ((fd = open(av[1], O_RDONLY)) == -1)
+	if ((fd = open(av[1], O_RDONLY)) == -1 || !check_file(fd, &head)
+			|| !check_pieces(head))
 		return (errors(2));
-	if (!check_file(fd, &head))
+	if (!(map = (unsigned short *)malloc(sizeof(unsigned short) * 16)))
 		return (errors(2));
 	initialize_pieces(&head);
-	sq_size = 1;
-	map =  NULL;
-	while (sq_size++ < 16 && map == NULL)
-	{
-		ft_putnbr(sq_size);
-		ft_putchar('\n');
-		fd = -1;
-		if (!(map = malloc(sizeof(short) * sq_size)))
-			return (errors(2));
-		while (++fd < sq_size)
-			map[fd] = 0;
-		map = ft_solve(head, map, sq_size);
-	}
-	if (map == NULL)
-		return (0);
-	affichage(head, sq_size - 1);
+	if (!(toolbox = (t_fibox *)malloc(sizeof(t_fibox))))
+		return (errors(2));
+	toolbox->n = ft_countpieces(head);
+	toolbox->sq_size = ft_sqsize(head);
+	if ((toolbox->sq_size = ft_solve_init(head, &map, toolbox)))
+		affichage(head, (toolbox->sq_size) - 1);
 	return (0);
 }

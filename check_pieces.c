@@ -3,66 +3,50 @@
 /*                                                        :::      ::::::::   */
 /*   check_pieces.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jubeal <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: scoron <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/11/28 15:46:17 by jubeal            #+#    #+#             */
-/*   Updated: 2018/11/29 18:31:59 by scoron           ###   ########.fr       */
+/*   Created: 2018/12/04 21:21:58 by scoron            #+#    #+#             */
+/*   Updated: 2018/12/04 22:32:38 by scoron           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
-#include <stdio.h>
 #include "fillit.h"
 
-t_pieces	*create_lstlink(t_pieces **link)
+void	check_sides(t_pieces *bitch, int ln, int pos, int *sides)
 {
-	int			i;
-	t_pieces	*tmp;
-
-	i = -1;
-	tmp = *link;
-	if (tmp)
-	{
-		while (tmp->next)
-			tmp = tmp->next;
-		if (!(tmp->next = (t_pieces *)malloc(sizeof(t_pieces))))
-			return ((t_pieces *)0);
-		tmp = tmp->next;
-	}
-	else
-	{
-		if (!(tmp = (t_pieces *)malloc(sizeof(t_pieces))))
-			return ((t_pieces *)0);
-	}
-	if (!(tmp->piece = (unsigned short *)malloc(sizeof(unsigned short)
-					* 16)))
-		return ((t_pieces *)0);
-	while (++i < 16)
-		(tmp->piece)[i] = 0;
-	tmp->next = NULL;
-	return (tmp);
+	if (pos < 15 && ((bitch->piece)[ln] << (pos + 1)) & 0x8000)
+		(*sides)++;
+	if (pos > 0 && ((bitch->piece)[ln] << (pos - 1)) & 0x8000)
+		(*sides)++;
+	if (ln > 0 && ((bitch->piece)[ln - 1] << pos) & 0x8000)
+		(*sides)++;
+	if (ln < 15 && ((bitch->piece)[ln + 1] << pos) & 0x8000)
+		(*sides)++;
 }
 
-void		line_convert(t_pieces **curr, char *line, int which)
+int		check_pieces(t_pieces *bitch)
 {
-	if (line[0] == '#')
-		((*curr)->piece)[which] += ft_power(2, 15);
-	if (line[1] == '#')
-		((*curr)->piece)[which] += ft_power(2, 14);
-	if (line[2] == '#')
-		((*curr)->piece)[which] += ft_power(2, 13);
-	if (line[3] == '#')
-		((*curr)->piece)[which] += ft_power(2, 12);
-}
+	int		ln;
+	int		pos;
+	int		nb;
+	int		sides;
 
-void		initialize_pieces(t_pieces **head)
-{
-	t_pieces	*tmp;
-
-	tmp = *head;
-	while (tmp)
+	ln = -1;
+	nb = 0;
+	sides = 0;
+	while (++ln < 16)
 	{
-		ft_reset_piece(tmp, 4);
-		tmp = tmp->next;
+		pos = -1;
+		while (++pos < 16)
+		{
+			if (((bitch->piece)[ln] << pos) & 0x8000)
+			{
+				nb++;
+				check_sides(bitch, ln, pos, &sides);
+			}
+		}
 	}
+	if (nb != 4 || sides > 8 || sides < 6)
+		return (0);
+	return (bitch->next ? check_pieces(bitch->next) : 1);
 }
